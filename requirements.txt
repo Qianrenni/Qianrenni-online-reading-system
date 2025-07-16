@@ -1,0 +1,15 @@
+beautifulsoup4==4.13.3
+EbookLib==0.18
+Flask==3.1.0
+Flask_Cors==5.0.0
+Flask_Docs==0.7.6
+Flask_JWT_Extended==4.7.1
+flask_mail==0.10.0
+flask_sqlalchemy==3.1.1
+mongoengine==0.29.1
+python_alipay_sdk==3.3.0
+python_dateutil==2.9.0.post0
+redis==5.2.1
+SQLAlchemy==2.0.38
+Werkzeug==3.1.3
+pymysql==1.0.3

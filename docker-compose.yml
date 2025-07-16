@@ -1,0 +1,75 @@
+version: '3.8'
+
+networks:
+  onlinereading:
+    name: onlinereading
+services:
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: reading   # 自动创建名为 reading 的数据库
+    ports:
+      - "3306:3306"
+    volumes:
+      - D:/online_reading_system/mysql:/var/lib/mysql  # 修改为Linux路径
+    networks:
+      - onlinereading
+    restart: no
+  mongodb:
+    image: mongodb:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - D:/online_reading_system/mongodb:/data/db  # 添加数据卷持久化
+    networks:
+      - onlinereading
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--maxmemory", "536870912", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - D:/online_reading_system/redis:/data  # 添加Redis数据卷
+    networks:
+      - onlinereading
+    restart: no
+
+  flask_container:
+    image: reading-server:latest
+    container_name: flask_container
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      SERVER_URL: "http://127.0.0.1/api"
+      MONGO_URL: "mongodb://host.docker.internal:27017/reading"
+      SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:123456@host.docker.internal:3306/reading"
+      REDIS_URL: "redis://host.docker.internal:6379/0"
+      REDIS_ENABLED: "true"
+      SENSITIVE_ENABLED: "false"
+      SCRIPT_UPDATE:  "true"
+    volumes:
+      - D:/online_reading_system/book:/app/uploads  # 修改为Linux路径
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - onlinereading
+    restart: no
+
+  frontend-proxy-container:
+    image: frontend-proxy:latest
+    container_name: frontend-proxy-container
+    build: ./frontend-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - flask_container
+    networks:
+      - onlinereading
+    restart: no
