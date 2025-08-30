@@ -72,9 +72,17 @@
   ```
   pip3 install -r requirements.txt
   ```
-
+- **修改对应的配置文件**
+  - /app/keys
+    key文件换成自己支付宝的沙箱文件
+  - /app/config.py
+    修改对应的数据库连接信息
 - **启动项目**
 
   ```
   python3 run.py
   ```
+
+- **对应前端项目地址**  
+  [管理端](https://gitee.com/Qianrenni/online-reading-system-admin)  
+  [用户端](https://gitee.com/Qianrenni/online-reading-system-user)
